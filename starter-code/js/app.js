@@ -3,7 +3,11 @@
 // Cart constructor.
 var Cart = function(items) {
   // this.items is an array of CartItem instances.
-  this.items = items;
+  if (localStorage.getItem('cart')){
+    this.items = JSON.parse(localStorage.getItem('cart'));
+  } else{
+    this.items = items;
+  }
 };
 
 Cart.prototype.addItem = function(product, quantity) {
@@ -12,8 +16,9 @@ Cart.prototype.addItem = function(product, quantity) {
 };
 
 Cart.prototype.saveToLocalStorage = function() {
+  console.log(localStorage);
   // TODO: Fill in this instance method to save the contents of the cart to localStorage
-  localStorage.setItem('cart', JSON.stringify(cart.items));
+  localStorage.setItem('cart', JSON.stringify(this.items));
 };
 
 Cart.prototype.removeItem = function(item) {
