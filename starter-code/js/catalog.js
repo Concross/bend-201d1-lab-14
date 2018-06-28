@@ -8,7 +8,7 @@ var cart = new Cart([]);
 // On screen load, we call this method to put all of the busmall options
 // (the things in the Product.allProducts array) into the drop down list.
 function populateForm() {
-
+  updateCounter();
   //Add an <option> tag inside the form's select for each product
   var selectElement = document.getElementById('items');
   for (var i in Product.allProducts) {
@@ -51,7 +51,13 @@ function addSelectedItemToCart() {
 //Update the cart count in the header nav with the number of items in the Cart
 function updateCounter() {
   var itemCount = document.getElementById('itemCount');
-  itemCount.textContent = cart.items.length;
+  console.log(JSON.parse(localStorage.getItem('cart')));
+  if (localStorage.getItem('cart')){
+    itemCount.textContent = JSON.parse(localStorage.getItem('cart')).length;
+    debugger;
+  } else {
+    itemCount.textContent = cart.items.length;
+  }
 }
 
 // As you add items into the cart, show them (item & quantity) in the cart preview div
