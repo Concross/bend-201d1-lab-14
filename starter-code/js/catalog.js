@@ -8,7 +8,15 @@ var cart = new Cart([]);
 // On screen load, we call this method to put all of the busmall options
 // (the things in the Product.allProducts array) into the drop down list.
 function populateForm() {
-  updateCounter();
+
+  if (localStorage.getItem('cart')) {
+    var cartItemArray = JSON.parse(localStorage.getItem('cart'));
+    for (var i = 0; i < cartItemArray.length; i++) {
+      var itemHeaderEl = document.createElement('h2');
+      itemHeaderEl.textContent = cartItemArray[i].product + ' Quantity: ' + cartItemArray[i].quantity;
+      cartContentsNode.appendChild(itemHeaderEl);
+    }
+  }
   //Add an <option> tag inside the form's select for each product
   var selectElement = document.getElementById('items');
   for (var i in Product.allProducts) {
@@ -18,7 +26,6 @@ function populateForm() {
     selectElement.appendChild(optionEl);
 
   }
-
 }
 
 // When someone submits the form, we need to add the selected item to the cart
@@ -33,7 +40,6 @@ function handleSubmit(event) {
   cart.saveToLocalStorage();
   updateCounter();
   updateCartPreview();
-
 }
 
 //Add the selected item and quantity to the cart
@@ -51,10 +57,8 @@ function addSelectedItemToCart() {
 //Update the cart count in the header nav with the number of items in the Cart
 function updateCounter() {
   var itemCount = document.getElementById('itemCount');
-  console.log(JSON.parse(localStorage.getItem('cart')));
-  if (localStorage.getItem('cart')){
+  if (localStorage.getItem('cart')) {
     itemCount.textContent = JSON.parse(localStorage.getItem('cart')).length;
-    debugger;
   } else {
     itemCount.textContent = cart.items.length;
   }
@@ -63,14 +67,18 @@ function updateCounter() {
 // As you add items into the cart, show them (item & quantity) in the cart preview div
 function updateCartPreview() {
   var cartContentsNode = document.getElementById('cartContents');
-  for (var i = 0; i < cart.items.length; i++) {
-    var itemHeaderEl = document.createElement('h2');
-    itemHeaderEl.textContent = cart.items[i].product + ' Quantity: ' + cart.items[i].quantity;
-  }
+  var cartItemArray;
+  var itemHeaderEl;
+  cartItemArray = JSON.parse(localStorage.getItem('cart'));
+  itemHeaderEl = document.createElement('h2');
+  var i = cartItemArray.length - 1;
+  itemHeaderEl.textContent = cartItemArray[i].product + ' Quantity: ' + cartItemArray[i].quantity;
+  console.log(itemHeaderEl.textContent);
   cartContentsNode.appendChild(itemHeaderEl);
+}
+  
   // Get the item and quantity from the form
   //Add a new element to the cartContents div with that information
-}
 
 // Set up the "submit" event listener on the form.
 // This is the trigger for the app. When a user "submits" the form, it will
@@ -81,3 +89,4 @@ catalogForm.addEventListener('submit', handleSubmit);
 // Before anything else of value can happen, we need to fill in the select
 // drop down list in the form.
 populateForm();
+updateCartPreview();
